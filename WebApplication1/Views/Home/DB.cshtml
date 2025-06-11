@@ -1,0 +1,34 @@
+﻿@using WebApplication1.Services.Hash
+@using WebApplication1.Services.kdf
+@inject WebApplication1.Services.UserService userService
+
+@{
+    ViewData["Title"] = "DB";
+}
+
+<div class="text-center">
+    @{
+        await userService.CreateUserAsync(
+        new WebApplication1.Data.Entities.User { Id = new Guid("d9b8f5de-45d2-4b0c-a2c6-e4b6b46e5ed1"), Name = "John Doe", Email = "john.doe@example.com" },
+                     "testLogin",
+                     "testPassword",
+        new PbKdf1Service(new Md5HashService())
+                     );
+    }
+
+    <p>
+        @{
+            var userId = new Guid("d9b8f5de-45d2-4b0c-a2c6-e4b6b46e5ed1");
+            var user = await userService.GetUserAsync(userId);
+        }
+
+        @if (user != null)
+        {
+            <strong>User Name:</strong> @user.Name
+        }
+        else
+        {
+            <strong>User not found</strong>
+        }
+    </p>
+</div>
